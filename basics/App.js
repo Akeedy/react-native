@@ -10,28 +10,39 @@ import {
 } from 'react-native';
 import musicData from "./musicData.json";
 import SongCard from './components/Songs/SongCard';
+import SearchBar from './components/SearchBar/SearchBar';
 
 const App = () => {
-
+  const [musicList,setMusicList] =useState(musicData);
   const renderSong=({item})=><SongCard song={item}></SongCard>
   const renderSeparator=()=><View style={style.separator}></View> 
+  const handleSearch=(text)=>{
+    const filteredList=musicData.filter(song=>{
+      const searchedText=text.toLowerCase();
+      const searchedTitle=song.title.toLowerCase();
+      return (searchedTitle.indexOf(searchedText)>-1);
+    });
+    setMusicList(filteredList);
+  };
   return (
-    <SafeAreaView style={style.container}>
       <View style={style.container}>
+        <SearchBar handleSearch={handleSearch}></SearchBar>
         <FlatList
-          data={musicData}
+          data={musicList}
           keyExtractor={item=>item.id}
           renderItem={renderSong}
           ItemSeparatorComponent={renderSeparator}
           />
 
       </View>
-    </SafeAreaView>
   );
 };
 
 const style = StyleSheet.create({
-  container:{flex:1},
+  container:{
+    flex:1,
+    backgroundColor:"white",
+  },
   separator:{
     borderWidth:1,
     borderColor:"#e0e0e0"
